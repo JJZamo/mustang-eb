@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mustang">
+<title>Mustang</title>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAABzElEQVR4nO3SQQ2EUBAFQcAHVjCFjjW1VlbIR0FfSAiwqbrP5B16HmNMf2Td9hNXv+/noj+vttw9gOcSB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcpAMoNAplrjmKmgAAAABJRU5ErkJggg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Hanken+Grotesk:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:         #ffffff;
+  --surface:    #ffffff;
+  --border:     #ebebeb;
+  --border2:    #ccc9c0;
+  --blue:       #1c3d72;
+  --blue-mid:   #2550a0;
+  --blue-pale:  #edf0f8;
+  --text:       #181714;
+  --text-mid:   #3a3835;
+  --text-dim:   #6b6760;
+  --green:      #286844;
+  --green-pale: #eaf3ed;
+  --yellow:     #8a6000;
+  --yellow-pale:#fdf3d8;
+  --red:        #b03020;
+  --red-pale:   #fcecea;
+  --r:          14px;
+  --r-sm:       9px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Hanken Grotesk', sans-serif;
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--surface);
+  padding: 52px 22px 18px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8px;
+  background: var(--blue);
+}
+
+.header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.car-eyebrow { display: none; }
+
+.car-title {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: 3px;
+  color: var(--text);
+  line-height: 1;
+}
+
+.car-title span { color: var(--blue); }
+
+.odo-block { text-align: right; }
+
+.odo-value {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--text);
+  line-height: 1;
+}
+
+.odo-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.odo-label {
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+
+.odo-badge {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.odo-badge.ok    { color: var(--green); }
+.odo-badge.stale { color: var(--yellow); }
+.odo-badge.none  { color: var(--text-dim); }
+
+/* ── BOTTOM NAV — floating pill ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  background: var(--surface);
+  border-radius: 999px;
+  box-shadow: 0 4px 28px rgba(0,0,0,0.11), 0 1px 4px rgba(0,0,0,0.07);
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  padding: 5px;
+  gap: 2px;
+}
+
+/* Sliding background pill */
+.nav-pill {
+  position: absolute;
+  width: 52px; height: 40px;
+  background: #e8e8e8;
+  border-radius: 999px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.1, 0.64, 1);
+  pointer-events: none;
+  left: 5px;
+  top: 5px;
+  z-index: 0;
+}
+
+.nav-item {
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-item:active { opacity: 0.6; }
+
+.nav-icon { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; }
+.nav-icon svg { stroke: var(--text-dim); transition: stroke 0.18s; }
+
+.nav-item.active .nav-icon svg {
+  stroke: var(--text);
+  stroke-width: 1.8;
+}
+
+/* ── CONTENT ── */
+.content { padding: 0 16px 120px; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── SECTION HEADING ── */
+.sec-head {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  color: var(--text-mid);
+  padding: 22px 2px 10px;
+}
+
+/* ── TIRE CARD ── */
+.tire-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.tire-row-left {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--blue);
+}
+
+.tire-row-sub {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-dim);
+  margin-top: 1px;
+}
+
+.tire-row-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.tire-years {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.tire-years-label {
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--text-dim);
+  margin-top: 1px;
+}
+
+/* ── SERVICE CARDS ── */
+.svc-card {
+  background: var(--surface);
+  border: none;
+  border-radius: var(--r);
+  margin-bottom: 7px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  transition: box-shadow 0.15s;
+}
+
+.svc-card.urgent { box-shadow: -3px 0 0 var(--red),   0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05); }
+.svc-card.soon   { box-shadow: -3px 0 0 var(--yellow), 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05); }
+.svc-card.ok     { box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05); }
+
+.svc-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  gap: 10px;
+}
+
+.svc-dot { display: none; }
+
+.svc-title-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 10px;
+}
+
+.svc-name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--blue);
+}
+
+.svc-km-rem {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.svc-km-rem.urgent { color: var(--red); font-weight: 400; }
+.svc-km-rem.soon   { color: var(--yellow); font-weight: 400; }
+
+.svc-km-target { display: none; }
+
+/* ── CARD DETAIL ── */
+.svc-detail {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 16px 0 16px;
+  border-top: 0px solid var(--border);
+  transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              border-top-width 0.32s;
+}
+
+.svc-detail.open {
+  max-height: 600px;
+  padding: 4px 16px 14px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.detail-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0efec;
+  cursor: pointer;
+  user-select: none;
+}
+
+.detail-row:last-of-type { border-bottom: none; }
+.detail-row:active { opacity: 0.6; }
+
+.dcheck {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--border2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: white;
+  transition: all 0.15s;
+  pointer-events: none;
+}
+
+.dcheck.done { background: var(--blue); border-color: var(--blue); }
+.dcheck svg  { display: none; }
+.dcheck.done svg { display: block; }
+
+.dtext { flex: 1; font-size: 13px; font-weight: 300; color: var(--text); }
+.dtext.done { text-decoration: line-through; color: var(--text-dim); }
+
+.last-note {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-dim);
+  padding: 8px 0 2px;
+}
+
+.btn-reg {
+  display: block;
+  margin: 12px auto 0;
+  padding: 7px 20px;
+  background: transparent;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 12px;
+  cursor: pointer; transition: opacity 0.2s;
+  text-align: center;
+}
+
+.btn-reg:active { opacity: 0.6; }
+
+/* ── ALERTS ── */
+.alert-strip {
+  border-radius: var(--r-sm);
+  padding: 10px 13px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.alert-strip.brake { background: var(--red-pale);    color: var(--red);    border: 1px solid #f0b8b2; }
+.alert-strip.odo   { background: var(--yellow-pale); color: var(--yellow); border: 1px solid #e8cc88; }
+
+/* ── HISTORY ── */
+.hist-row {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 16px;
+  background: var(--surface);
+  border-radius: var(--r);
+  margin-bottom: 7px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#hist-wrap { box-shadow: none; border-radius: 0; overflow: visible; }
+
+.hist-dot { display: none; }
+
+.hist-info { flex: 1; min-width: 0; }
+
+.hist-name {
+  font-size: 13px; font-weight: 500; color: var(--blue);
+}
+
+.hist-meta { font-size: 11px; font-weight: 300; color: var(--text-dim); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-km { font-size: 13px; font-weight: 300; color: var(--text-dim); text-align: right; flex-shrink: 0; }
+
+/* ── CONFIG ── */
+.cfg-block {
+  background: var(--surface); border: none;
+  border-radius: var(--r); overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.cfg-block-title {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.3px;
+  color: var(--text-dim); padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cfg-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border-bottom: 1px solid var(--border);
+}
+
+.cfg-row:last-child { border-bottom: none; }
+
+.cfg-label { font-size: 13px; font-weight: 500; color: var(--blue); }
+.cfg-sub   { font-size: 11px; font-weight: 300; color: var(--text-dim); margin-top: 2px; }
+
+.cfg-input {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text);
+  font-family: 'DM Mono', monospace; font-size: 13px;
+  padding: 7px 10px; width: 130px; text-align: right;
+}
+
+.cfg-input:focus { outline: none; border-color: var(--blue); background: white; }
+
+.toggle {
+  display: flex; background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden;
+}
+
+.tog-opt {
+  padding: 7px 14px;
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 12px;
+  cursor: pointer; color: var(--text-dim); transition: all 0.15s; white-space: nowrap;
+}
+
+.tog-opt.active { background: var(--blue); color: white; font-weight: 500; }
+
+.cfg-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-save {
+  padding: 8px 20px;
+  background: transparent;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
+  font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  text-align: center;
+}
+
+.btn-save:active { opacity: 0.6; }
+
+.btn-reset {
+  padding: 8px 20px;
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 999px;
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
+  font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  text-align: center;
+}
+
+.btn-reset:active { opacity: 0.6; }
+
+.btn-confirm-red {
+  padding: 8px 18px; background: transparent;
+  border: 1px solid var(--red); border-radius: 999px; color: var(--red);
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
+  font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  text-align: center;
+}
+
+.btn-confirm-red:active { opacity: 0.6; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(20,18,15,0.45);
+  z-index: 200; display: none;
+  align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 430px;
+  padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 28px);
+  animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.modal-handle {
+  width: 30px; height: 3px; background: var(--border2);
+  border-radius: 2px; margin: 0 auto 18px;
+}
+
+.modal-title {
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
+  font-size: 16px; color: var(--text); margin-bottom: 18px;
+}
+
+.mfield { margin-bottom: 13px; }
+
+.mfield label {
+  display: block; font-size: 10px; font-weight: 400;
+  letter-spacing: 0.3px; color: var(--text-dim); margin-bottom: 6px;
+}
+
+.mfield input, .mfield textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 15px; font-weight: 400; padding: 10px 12px;
+  transition: border-color 0.15s;
+}
+
+.mfield input:focus, .mfield textarea:focus {
+  outline: none; border-color: var(--blue); background: white;
+}
+
+.mfield textarea { height: 66px; resize: none; font-size: 13px; }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; align-items: center; justify-content: center; }
+
+.btn-cancel {
+  padding: 8px 18px; background: transparent;
+  border: 1px solid var(--border2); border-radius: 999px;
+  color: var(--text-dim); font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 400; font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  text-align: center;
+}
+
+.btn-cancel:active { opacity: 0.6; }
+
+.btn-confirm {
+  padding: 8px 20px; background: transparent;
+  border: 1px solid var(--blue); border-radius: 999px; color: var(--blue);
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
+  font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  text-align: center;
+}
+
+.btn-confirm:active { opacity: 0.6; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 96px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--text); color: white;
+  font-size: 12px; font-weight: 400;
+  padding: 9px 18px; border-radius: 20px;
+  opacity: 0; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none; white-space: nowrap; z-index: 300;
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+.empty-icon { font-size: 28px; opacity: 0.2; margin-bottom: 10px; }
+.empty-text { font-size: 12px; font-weight: 300; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div>
+      <div class="car-eyebrow">Ford · 2.3L Turbo</div>
+      <div class="car-title">MUSTANG <span>EB</span></div>
+    </div>
+    <div class="odo-block">
+      <div class="odo-value" id="display-km">— km</div>
+      <div class="odo-meta">
+        <div class="odo-label">odómetro</div>
+        <div class="odo-badge none" id="odo-badge">sin datos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- PRÓXIMOS -->
+  <div class="view active" id="view-proximos">
+    <div class="sec-head">Próximo cambio de llantas</div>
+    <div class="tire-card">
+      <div>
+        <div class="tire-row-left">Yokohama Advan Apex V601</div>
+        <div class="tire-row-sub" id="tire-sub">235/50R18 · configura fecha en Config</div>
+      </div>
+      <div class="tire-row-right">
+        <div class="tire-years" id="tire-val" style="color:var(--text-dim)">—</div>
+        <div class="tire-years-label">años rest.</div>
+      </div>
+    </div>
+
+    <div class="sec-head" style="padding-top:28px;">Próximos servicios</div>
+    <div id="alert-wrap"></div>
+    <div id="cards-wrap"></div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="view" id="view-historial">
+    <div class="sec-head">Historial</div>
+    <div id="hist-wrap">
+      <div class="empty"><div class="empty-icon">🔧</div><div class="empty-text">Sin registros aún</div></div>
+    </div>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="view" id="view-config">
+    <div class="sec-head">Configuración</div>
+
+    <div class="cfg-block">
+      <div class="cfg-row">
+        <div><div class="cfg-label">Odómetro actual</div><div class="cfg-sub">km en el tablero hoy</div></div>
+        <input class="cfg-input" type="number" id="cfg-km" placeholder="0" min="0">
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-label">Perfil</div><div class="cfg-sub">Ajusta intervalos</div></div>
+        <div class="toggle">
+          <div class="tog-opt active" id="tog-s1" onclick="setProfile('stage1')">Stage 1</div>
+          <div class="tog-opt" id="tog-st" onclick="setProfile('stock')">Stock</div>
+        </div>
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-label">Último cambio de llantas</div><div class="cfg-sub">Yokohama V601</div></div>
+        <input class="cfg-input" type="date" id="cfg-tire-date" style="width:158px;font-size:12px;padding:7px 8px;">
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-label">Último cambio de balatas</div><div class="cfg-sub">km en tablero</div></div>
+        <input class="cfg-input" type="number" id="cfg-brake-km" placeholder="—">
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-label">Grosor actual de balatas</div><div class="cfg-sub">mm · delanteras</div></div>
+        <input class="cfg-input" type="number" id="cfg-brake-mm" placeholder="mm" step="0.5" min="0" max="15">
+      </div>
+    </div>
+
+    <div class="cfg-btn-row">
+      <button class="btn-save" onclick="saveConfig()">Guardar</button>
+      <button class="btn-reset" onclick="openReset()">Resetear</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV — floating pill, no labels -->
+<div class="bottom-nav">
+  <div class="nav-pill" id="nav-pill"></div>
+  <div class="nav-item active" onclick="switchTab('proximos')" id="nav-proximos">
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+  </div>
+  <div class="nav-item" onclick="switchTab('historial')" id="nav-historial">
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>
+      </svg>
+    </div>
+  </div>
+  <div class="nav-item" onclick="switchTab('config')" id="nav-config">
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Registrar servicio</div>
+    <div class="mfield">
+      <label>Kilómetros al registrar</label>
+      <input type="number" id="modal-km" placeholder="ej. 25000">
+    </div>
+    <div class="mfield">
+      <label>Fecha</label>
+      <input type="date" id="modal-date">
+    </div>
+    <div id="brake-wrap" style="display:none">
+      <div class="mfield">
+        <label>Grosor de balatas (mm)</label>
+        <input type="number" id="modal-brake-mm" placeholder="ej. 7" step="0.5" min="0" max="15">
+      </div>
+    </div>
+    <div class="mfield">
+      <label>Taller · notas (opcional)</label>
+      <textarea id="modal-notes" placeholder="Taller, costo, observaciones…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmRegistro()">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET MODAL -->
+<div class="modal-overlay" id="modal-reset" onclick="closeResetOutside(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">¿Estás seguro?</div>
+    <p style="font-size:13px; font-weight:300; color:var(--text-mid); margin-bottom:6px;">
+      Se borrará todo el historial, registros de servicio, odómetro y configuración. Esta acción no se puede deshacer.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeReset()">No, cancelar</button>
+      <button class="btn-confirm-red" onclick="confirmReset()">Sí, resetear</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const INTERVALS = {
+  stage1: { A:5000,  B:15000, C:20000, D:45000, E:80000 },
+  stock:  { A:8000,  B:24000, C:32000, D:64000, E:80000 }
+};
+
+const COLORS = { A:'#1c3d72', B:'#2550a0', C:'#3568c4', D:'#4e82d8', E:'#6e9de0' };
+
+const PKGS = [
+  { id:'A', name:'Rutina',    items:['Cambio de aceite (5W-30 full synthetic)','Inspección mangueras turbo','Revisión boost leaks','Inspección visual balatas'] },
+  { id:'B', name:'Filtros',   items:['Todo el Paquete A','Limpieza filtro K&N','Cambio filtro de cabina','Limpieza intercooler (FMIC)','Rotación de llantas'] },
+  { id:'C', name:'Encendido', items:['Todo el Paquete B','Cambio de bujías','Limpieza throttle body'] },
+  { id:'D', name:'Fluidos',   items:['Todo el Paquete C','Fluido de frenos','Fluido diferencial trasero','Walnut blast — inyectores GDI'] },
+  { id:'E', name:'Mayor',     items:['Todo el Paquete D','Fluido de transmisión','Coolant flush','Inspección correa accesorios'] }
+];
+
+let S = {
+  currentKm:0, lastOdoUpdate:null, tireDate:null,
+  profile:'stage1', lastService:{}, history:[],
+  brakes:{ frontKm:null, frontMm:null }
+};
+
+function load() { const r=localStorage.getItem('mustang_v5'); if(r) S={...S,...JSON.parse(r)}; }
+function save() { localStorage.setItem('mustang_v5',JSON.stringify(S)); }
+
+const fmtKm = n => Number(n).toLocaleString('es-MX')+' km';
+const todayStr = () => new Date().toISOString().split('T')[0];
+const daysSince = d => d ? Math.floor((Date.now()-new Date(d))/86400000) : null;
+
+function getInt(id)  { return INTERVALS[S.profile][id]; }
+function nextKm(id)  { const l=S.lastService[id]; return l ? l.km+getInt(id) : getInt(id); }
+function remKm(id)   { return nextKm(id)-S.currentKm; }
+function pct(id)     { const l=S.lastService[id]; const b=l?l.km:0; return Math.min(100,Math.max(0,(S.currentKm-b)/getInt(id)*100)); }
+
+function urg(rem,int) {
+  if(rem<=0) return 'urgent';
+  if(rem/int<=0.2) return 'urgent';
+  if(rem/int<=0.4) return 'soon';
+  return 'ok';
+}
+
+// Tab switching with sliding pill
+const TABS = ['proximos','historial','config'];
+const PILL_STEP = 54; // item width (52) + gap (2)
+
+function switchTab(id) {
+  TABS.forEach(t => {
+    document.getElementById('nav-'+t).classList.toggle('active', t===id);
+    document.getElementById('view-'+t).classList.toggle('active', t===id);
+  });
+  const idx = TABS.indexOf(id);
+  document.getElementById('nav-pill').style.transform = `translateX(${idx * PILL_STEP}px)`;
+  if(id==='historial') renderHistory();
+  if(id==='config') loadCfg();
+}
+
+function renderOdo() {
+  document.getElementById('display-km').textContent = S.currentKm ? fmtKm(S.currentKm) : '— km';
+  const badge = document.getElementById('odo-badge');
+  const days = daysSince(S.lastOdoUpdate);
+  if(days===null)  { badge.className='odo-badge none'; badge.textContent='sin datos'; }
+  else if(days>60) { badge.className='odo-badge stale'; badge.textContent='desactualizado'; }
+  else             { badge.className='odo-badge ok'; badge.textContent='al día'; }
+}
+
+function renderTire() {
+  if(!S.tireDate) return;
+  const elapsed=(Date.now()-new Date(S.tireDate))/(1000*60*60*24*365.25);
+  const rem=Math.max(0,5-elapsed);
+  const color=rem<=0?'var(--red)':rem<=1?'var(--yellow)':'var(--text)';
+  const el=document.getElementById('tire-val');
+  el.textContent=rem.toFixed(1);
+  el.style.color=color;
+  document.getElementById('tire-sub').textContent=`235/50R18 · compra: ${S.tireDate}`;
+}
+
+function renderCards() {
+  renderOdo(); renderTire();
+
+  const alertWrap=document.getElementById('alert-wrap');
+  alertWrap.innerHTML='';
+  const days=daysSince(S.lastOdoUpdate);
+  if(days!==null && days>60)
+    alertWrap.innerHTML+=`<div class="alert-strip odo">⚠ Odómetro sin actualizar hace ${days} días</div>`;
+  if(S.brakes.frontMm!==null && S.brakes.frontMm<=3)
+    alertWrap.innerHTML+=`<div class="alert-strip brake">⚠ Balatas delanteras: ${S.brakes.frontMm}mm</div>`;
+
+  const wrap=document.getElementById('cards-wrap');
+  wrap.innerHTML='';
+
+  const sorted=[...PKGS].sort((a,b)=>remKm(a.id)-remKm(b.id));
+
+  sorted.forEach(pkg=>{
+    const rem=remKm(pkg.id);
+    const u=urg(rem,getInt(pkg.id));
+    const last=S.lastService[pkg.id];
+    const col=COLORS[pkg.id];
+    const remTxt=rem<=0?'Vencido':'+'+Number(rem).toLocaleString('es-MX')+' km';
+
+    const card=document.createElement('div');
+    card.className=`svc-card ${u}`;
+    card.id=`card-${pkg.id}`;
+    card.innerHTML=`
+      <div class="svc-header" onclick="toggleCard('${pkg.id}')">
+        <div class="svc-dot" style="background:${col}"></div>
+        <div class="svc-title-row">
+          <div class="svc-name">${pkg.name}</div>
+          <div class="svc-km-rem ${u}">${remTxt}</div>
+        </div>
+      </div>
+      <div class="svc-km-target">a los ${fmtKm(nextKm(pkg.id))}</div>
+      <div class="svc-detail" id="detail-${pkg.id}">
+        ${pkg.items.map((it,i)=>`
+          <div class="detail-row" id="row-${pkg.id}-${i}">
+            <div class="dcheck" id="chk-${pkg.id}-${i}">
+              <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                <path d="M1 3.5L3.2 5.7L8 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="dtext">${it}</div>
+          </div>`).join('')}
+        ${last?`<div class="last-note">Último: ${fmtKm(last.km)} · ${last.date}${last.notes?' · '+last.notes:''}</div>`:''}
+        <button class="btn-reg" onclick="openModal('${pkg.id}')">Registrar servicio</button>
+      </div>`;
+    wrap.appendChild(card);
+
+    pkg.items.forEach((_,i)=>{
+      const row=card.querySelector(`#row-${pkg.id}-${i}`);
+      if(row) row.addEventListener('click',e=>{
+        e.stopPropagation();
+        row.querySelector('.dcheck')?.classList.toggle('done');
+        row.querySelector('.dtext')?.classList.toggle('done');
+      });
+    });
+  });
+}
+
+function toggleCard(id) {
+  document.getElementById('detail-'+id)?.classList.toggle('open');
+}
+
+let activePkg=null;
+
+function openModal(pkgId) {
+  activePkg=pkgId;
+  const pkg=PKGS.find(p=>p.id===pkgId);
+  document.getElementById('modal-title').textContent='Registrar — '+pkg.name;
+  document.getElementById('modal-km').value=S.currentKm||'';
+  document.getElementById('modal-date').value=todayStr();
+  document.getElementById('modal-notes').value='';
+  document.getElementById('brake-wrap').style.display=pkgId==='A'?'block':'none';
+  const bmm=document.getElementById('modal-brake-mm');
+  if(bmm) bmm.value='';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); activePkg=null; }
+function closeModalOutside(e) { if(e.target===document.getElementById('modal')) closeModal(); }
+
+function confirmRegistro() {
+  const km=parseInt(document.getElementById('modal-km').value);
+  const date=document.getElementById('modal-date').value;
+  const notes=document.getElementById('modal-notes').value.trim();
+  if(!km||!date) { showToast('Completa km y fecha'); return; }
+  if(km>S.currentKm) { S.currentKm=km; S.lastOdoUpdate=date; }
+  if(activePkg==='A') {
+    const mm=parseFloat(document.getElementById('modal-brake-mm').value);
+    if(!isNaN(mm)) { S.brakes.frontMm=mm; S.brakes.frontKm=km; }
+  }
+  S.lastService[activePkg]={km,date,notes};
+  S.history.unshift({pkgId:activePkg,km,date,notes,ts:Date.now()});
+  save(); closeModal(); renderCards(); showToast('Servicio registrado');
+  document.querySelectorAll(`[id^="row-${activePkg}-"]`).forEach(row=>{
+    row.querySelector('.dcheck')?.classList.remove('done');
+    row.querySelector('.dtext')?.classList.remove('done');
+  });
+  document.getElementById('detail-'+activePkg)?.classList.remove('open');
+}
+
+function renderHistory() {
+  const c=document.getElementById('hist-wrap');
+  if(!S.history.length) {
+    c.innerHTML=`<div class="empty"><div class="empty-icon">🔧</div><div class="empty-text">Sin registros aún</div></div>`;
+    return;
+  }
+  c.innerHTML=S.history.map(h=>{
+    const pkg=PKGS.find(p=>p.id===h.pkgId); if(!pkg) return '';
+    const meta=[h.date, h.notes].filter(Boolean).join(' · ');
+    return `<div class="hist-row">
+      <div class="hist-info">
+        <div class="hist-name">${pkg.name}</div>
+        <div class="hist-meta">${meta}</div>
+      </div>
+      <div class="hist-km">${fmtKm(h.km)}</div>
+    </div>`;
+  }).join('');
+}
+
+function loadCfg() {
+  document.getElementById('cfg-km').value=S.currentKm||'';
+  document.getElementById('cfg-tire-date').value=S.tireDate||'';
+  document.getElementById('cfg-brake-km').value=S.brakes.frontKm||'';
+  document.getElementById('cfg-brake-mm').value=S.brakes.frontMm||'';
+  document.getElementById('tog-s1').classList.toggle('active',S.profile==='stage1');
+  document.getElementById('tog-st').classList.toggle('active',S.profile==='stock');
+}
+
+function setProfile(p) {
+  S.profile=p;
+  document.getElementById('tog-s1').classList.toggle('active',p==='stage1');
+  document.getElementById('tog-st').classList.toggle('active',p==='stock');
+}
+
+function saveConfig() {
+  const km=parseInt(document.getElementById('cfg-km').value)||0;
+  if(km!==S.currentKm) S.lastOdoUpdate=todayStr();
+  S.currentKm=km;
+  S.tireDate=document.getElementById('cfg-tire-date').value||null;
+  const bkm=parseInt(document.getElementById('cfg-brake-km').value);
+  const bmm=parseFloat(document.getElementById('cfg-brake-mm').value);
+  if(!isNaN(bkm)) S.brakes.frontKm=bkm;
+  if(!isNaN(bmm)) S.brakes.frontMm=bmm;
+  save(); renderCards(); showToast('Configuración guardada');
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+function openReset() { document.getElementById('modal-reset').classList.add('open'); }
+function closeReset() { document.getElementById('modal-reset').classList.remove('open'); }
+function closeResetOutside(e) { if(e.target===document.getElementById('modal-reset')) closeReset(); }
+
+function confirmReset() {
+  localStorage.removeItem('mustang_v5');
+  S = { currentKm:0, lastOdoUpdate:null, tireDate:null, profile:'stage1', lastService:{}, history:[], brakes:{ frontKm:null, frontMm:null } };
+  closeReset();
+  renderCards();
+  loadCfg();
+  showToast('Información reseteada');
+}
+
+load(); renderCards();
+</script>
+</body>
+</html>
