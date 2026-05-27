@@ -439,7 +439,20 @@ body {
 
 .tog-opt.active { background: var(--blue); color: white; font-weight: 500; }
 
-.cfg-btn-row {
+.btn-drive {
+  padding: 7px 16px;
+  background: transparent;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  cursor: pointer; transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.btn-drive:active { opacity: 0.6; }
+.btn-drive.connected { color: var(--green); border-color: var(--green); }
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -659,6 +672,24 @@ body {
     <div class="cfg-btn-row">
       <button class="btn-save" onclick="saveConfig()">Guardar</button>
       <button class="btn-reset" onclick="openReset()">Resetear</button>
+    </div>
+
+    <div class="sec-head" style="padding-top:28px;">Google Drive</div>
+    <div class="cfg-block">
+      <div class="cfg-row">
+        <div>
+          <div class="cfg-label" id="drive-label">Respaldo automático</div>
+          <div class="cfg-sub" id="drive-sub">Sin conectar</div>
+        </div>
+        <button class="btn-drive" id="btn-drive" onclick="handleDrive()">Conectar</button>
+      </div>
+      <div class="cfg-row" id="restore-row" style="display:none;">
+        <div>
+          <div class="cfg-label">Restaurar datos</div>
+          <div class="cfg-sub">Desde tu Drive</div>
+        </div>
+        <button class="btn-drive" onclick="restoreFromDrive()">Restaurar</button>
+      </div>
     </div>
   </div>
 
@@ -1082,6 +1113,153 @@ function confirmReset() {
 }
 
 load(); renderCards();
+
+// ── GOOGLE DRIVE ──────────────────────────────────────────
+const CLIENT_ID = '1078513728160-silgbu5mefei97498gung1lbavg9pcvd.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
+const FILE_NAME = 'mustang-eb.json';
+let driveToken = null;
+let driveFileId = localStorage.getItem('drive_file_id') || null;
+
+// Load Google Identity Services
+(function() {
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true; s.defer = true;
+  s.onload = () => {
+    const saved = localStorage.getItem('drive_token');
+    const exp = localStorage.getItem('drive_token_exp');
+    if(saved && exp && Date.now() < parseInt(exp)) {
+      driveToken = saved;
+      updateDriveUI(true);
+    }
+  };
+  document.head.appendChild(s);
+})();
+
+function handleDrive() {
+  if(driveToken) { disconnectDrive(); return; }
+  connectDrive();
+}
+
+function connectDrive() {
+  google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if(resp.error) { showToast('Error al conectar'); return; }
+      driveToken = resp.access_token;
+      const exp = Date.now() + (resp.expires_in * 1000);
+      localStorage.setItem('drive_token', driveToken);
+      localStorage.setItem('drive_token_exp', exp);
+      updateDriveUI(true);
+      syncToDrive();
+      showToast('Drive conectado ✓');
+    }
+  }).requestAccessToken();
+}
+
+function disconnectDrive() {
+  driveToken = null;
+  localStorage.removeItem('drive_token');
+  localStorage.removeItem('drive_token_exp');
+  localStorage.removeItem('drive_file_id');
+  driveFileId = null;
+  updateDriveUI(false);
+  showToast('Drive desconectado');
+}
+
+function updateDriveUI(connected) {
+  const btn = document.getElementById('btn-drive');
+  const sub = document.getElementById('drive-sub');
+  const restoreRow = document.getElementById('restore-row');
+  if(connected) {
+    btn.textContent = 'Desconectar';
+    btn.classList.add('connected');
+    sub.textContent = 'Sincronización activa';
+    restoreRow.style.display = 'flex';
+  } else {
+    btn.textContent = 'Conectar';
+    btn.classList.remove('connected');
+    sub.textContent = 'Sin conectar';
+    restoreRow.style.display = 'none';
+  }
+}
+
+async function syncToDrive() {
+  if(!driveToken) return;
+  const data = JSON.stringify(S);
+  try {
+    if(driveFileId) {
+      // Update existing file
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${driveToken}`, 'Content-Type': 'application/json' },
+        body: data
+      });
+    } else {
+      // Search for existing file first
+      const search = await fetch(
+        `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${FILE_NAME}'`,
+        { headers: { 'Authorization': `Bearer ${driveToken}` } }
+      );
+      const result = await search.json();
+      if(result.files && result.files.length > 0) {
+        driveFileId = result.files[0].id;
+        localStorage.setItem('drive_file_id', driveFileId);
+        await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${driveToken}`, 'Content-Type': 'application/json' },
+          body: data
+        });
+      } else {
+        // Create new file in appDataFolder
+        const meta = await fetch('https://www.googleapis.com/drive/v3/files', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${driveToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: FILE_NAME, parents: ['appDataFolder'] })
+        });
+        const file = await meta.json();
+        driveFileId = file.id;
+        localStorage.setItem('drive_file_id', driveFileId);
+        await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${driveToken}`, 'Content-Type': 'application/json' },
+          body: data
+        });
+      }
+    }
+  } catch(e) { console.warn('Drive sync failed:', e); }
+}
+
+async function restoreFromDrive() {
+  if(!driveToken) { showToast('Conecta Drive primero'); return; }
+  try {
+    const search = await fetch(
+      `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${FILE_NAME}'`,
+      { headers: { 'Authorization': `Bearer ${driveToken}` } }
+    );
+    const result = await search.json();
+    if(!result.files || result.files.length === 0) { showToast('Sin respaldo en Drive'); return; }
+    const fileId = result.files[0].id;
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+      headers: { 'Authorization': `Bearer ${driveToken}` }
+    });
+    const restored = await res.json();
+    S = { ...S, ...restored };
+    save();
+    renderCards();
+    loadCfg();
+    showToast('Datos restaurados ✓');
+  } catch(e) { showToast('Error al restaurar'); }
+}
+
+// Override save to also sync to Drive
+const _save = save;
+function save() {
+  localStorage.setItem('mustang_v5', JSON.stringify(S));
+  syncToDrive();
+}
 </script>
 </body>
 </html>
