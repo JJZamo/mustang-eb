@@ -47,7 +47,7 @@ body {
 /* ── HEADER ── */
 .header {
   background: var(--surface);
-  padding: 52px 22px 18px;
+  padding: 52px 22px 26px;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -86,7 +86,7 @@ body {
 .odo-value {
   font-family: 'Hanken Grotesk', sans-serif;
   font-weight: 400;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--text);
   line-height: 1;
 }
@@ -164,18 +164,33 @@ body {
 }
 
 /* ── CONTENT ── */
-.content { padding: 0 16px 120px; }
-.view { display: none; }
-.view.active { display: block; }
+.content { padding: 0 16px 120px; overflow: hidden; position: relative; }
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+  animation-duration: 0.28s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.view.slide-in-right { animation-name: slideInRight; }
+.view.slide-in-left  { animation-name: slideInLeft; }
+
+@keyframes slideInRight { from { transform: translateX(40px); opacity:0; } to { transform: translateX(0); opacity:1; } }
+@keyframes slideInLeft  { from { transform: translateX(-40px); opacity:0; } to { transform: translateX(0); opacity:1; } }
 
 /* ── SECTION HEADING ── */
 .sec-head {
   font-family: 'Hanken Grotesk', sans-serif;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.3px;
   color: var(--text-mid);
-  padding: 22px 2px 10px;
+  padding: 24px 2px 10px;
 }
 
 /* ── TIRE CARD ── */
@@ -190,13 +205,13 @@ body {
 }
 
 .tire-row-left {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--blue);
 }
 
 .tire-row-sub {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 300;
   color: var(--text-dim);
   margin-top: 1px;
@@ -258,12 +273,12 @@ body {
 .svc-name {
   font-family: 'Hanken Grotesk', sans-serif;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--blue);
 }
 
 .svc-km-rem {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 300;
   color: var(--text-dim);
   white-space: nowrap;
@@ -317,11 +332,11 @@ body {
 .dcheck svg  { display: none; }
 .dcheck.done svg { display: block; }
 
-.dtext { flex: 1; font-size: 13px; font-weight: 300; color: var(--text); }
+.dtext { flex: 1; font-size: 15px; font-weight: 300; color: var(--text); }
 .dtext.done { text-decoration: line-through; color: var(--text-dim); }
 
 .last-note {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 300;
   color: var(--text-dim);
   padding: 8px 0 2px;
@@ -330,13 +345,13 @@ body {
 .btn-reg {
   display: block;
   margin: 12px auto 0;
-  padding: 7px 20px;
+  padding: 8px 22px;
   background: transparent;
   color: var(--blue);
   border: 1px solid var(--blue);
   border-radius: 999px;
   font-family: 'Hanken Grotesk', sans-serif;
-  font-weight: 500; font-size: 12px;
+  font-weight: 500; font-size: 14px;
   cursor: pointer; transition: opacity 0.2s;
   text-align: center;
 }
@@ -348,7 +363,7 @@ body {
   border-radius: var(--r-sm);
   padding: 10px 13px;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   display: flex; align-items: center; gap: 8px;
 }
@@ -373,11 +388,11 @@ body {
 .hist-info { flex: 1; min-width: 0; }
 
 .hist-name {
-  font-size: 13px; font-weight: 500; color: var(--blue);
+  font-size: 15px; font-weight: 500; color: var(--blue);
 }
 
-.hist-meta { font-size: 11px; font-weight: 300; color: var(--text-dim); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hist-km { font-size: 13px; font-weight: 300; color: var(--text-dim); text-align: right; flex-shrink: 0; }
+.hist-meta { font-size: 13px; font-weight: 300; color: var(--text-dim); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-km { font-size: 15px; font-weight: 300; color: var(--text-dim); text-align: right; flex-shrink: 0; }
 
 /* ── CONFIG ── */
 .cfg-block {
@@ -399,13 +414,13 @@ body {
 
 .cfg-row:last-child { border-bottom: none; }
 
-.cfg-label { font-size: 13px; font-weight: 500; color: var(--blue); }
-.cfg-sub   { font-size: 11px; font-weight: 300; color: var(--text-dim); margin-top: 2px; }
+.cfg-label { font-size: 15px; font-weight: 500; color: var(--blue); }
+.cfg-sub   { font-size: 13px; font-weight: 300; color: var(--text-dim); margin-top: 2px; }
 
 .cfg-input {
   background: var(--bg); border: 1px solid var(--border);
   border-radius: var(--r-sm); color: var(--text);
-  font-family: 'DM Mono', monospace; font-size: 13px;
+  font-family: 'DM Mono', monospace; font-size: 14px;
   padding: 7px 10px; width: 130px; text-align: right;
 }
 
@@ -418,7 +433,7 @@ body {
 
 .tog-opt {
   padding: 7px 14px;
-  font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 12px;
+  font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 14px;
   cursor: pointer; color: var(--text-dim); transition: all 0.15s; white-space: nowrap;
 }
 
@@ -432,26 +447,26 @@ body {
 }
 
 .btn-save {
-  padding: 8px 20px;
+  padding: 9px 22px;
   background: transparent;
   color: var(--blue);
   border: 1px solid var(--blue);
   border-radius: 999px;
   font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
-  font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  font-size: 15px; cursor: pointer; transition: opacity 0.2s;
   text-align: center;
 }
 
 .btn-save:active { opacity: 0.6; }
 
 .btn-reset {
-  padding: 8px 20px;
+  padding: 9px 22px;
   background: transparent;
   color: var(--red);
   border: 1px solid var(--red);
   border-radius: 999px;
   font-family: 'Hanken Grotesk', sans-serif; font-weight: 500;
-  font-size: 13px; cursor: pointer; transition: opacity 0.2s;
+  font-size: 15px; cursor: pointer; transition: opacity 0.2s;
   text-align: center;
 }
 
@@ -723,6 +738,31 @@ body {
   </div>
 </div>
 
+<!-- EDIT HISTORY MODAL -->
+<div class="modal-overlay" id="modal-hist" onclick="closeHistModalOutside(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="hist-modal-title">Editar registro</div>
+    <div class="mfield">
+      <label>Kilómetros</label>
+      <input type="number" id="hist-modal-km" placeholder="ej. 25000">
+    </div>
+    <div class="mfield">
+      <label>Fecha</label>
+      <input type="date" id="hist-modal-date">
+    </div>
+    <div class="mfield">
+      <label>Taller · notas (opcional)</label>
+      <textarea id="hist-modal-notes" placeholder="Taller, costo, observaciones…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeHistModal()">Cancelar</button>
+      <button class="btn-confirm-red" onclick="confirmDeleteHist()" style="flex:none; padding:8px 16px;">Eliminar</button>
+      <button class="btn-confirm" onclick="confirmEditHist()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -735,10 +775,10 @@ const COLORS = { A:'#1c3d72', B:'#2550a0', C:'#3568c4', D:'#4e82d8', E:'#6e9de0'
 
 const PKGS = [
   { id:'A', name:'Rutina',    items:['Cambio de aceite (5W-30 full synthetic)','Inspección mangueras turbo','Revisión boost leaks','Inspección visual balatas'] },
-  { id:'B', name:'Filtros',   items:['Todo el Paquete A','Limpieza filtro K&N','Cambio filtro de cabina','Limpieza intercooler (FMIC)','Rotación de llantas'] },
-  { id:'C', name:'Encendido', items:['Todo el Paquete B','Cambio de bujías','Limpieza throttle body'] },
-  { id:'D', name:'Fluidos',   items:['Todo el Paquete C','Fluido de frenos','Fluido diferencial trasero','Walnut blast — inyectores GDI'] },
-  { id:'E', name:'Mayor',     items:['Todo el Paquete D','Fluido de transmisión','Coolant flush','Inspección correa accesorios'] }
+  { id:'B', name:'Filtros',   items:['Servicio Rutina','Limpieza filtro K&N','Cambio filtro de cabina','Limpieza intercooler (FMIC)','Rotación de llantas'] },
+  { id:'C', name:'Encendido', items:['Servicio Rutina','Servicio Filtros','Cambio de bujías','Limpieza throttle body'] },
+  { id:'D', name:'Fluidos',   items:['Servicio Rutina','Servicio Filtros','Servicio Encendido','Fluido de frenos','Fluido diferencial trasero','Walnut blast — inyectores GDI'] },
+  { id:'E', name:'Mayor',     items:['Servicio Rutina','Servicio Filtros','Servicio Encendido','Servicio Fluidos','Fluido de transmisión','Coolant flush','Inspección correa accesorios'] }
 ];
 
 let S = {
@@ -766,17 +806,35 @@ function urg(rem,int) {
   return 'ok';
 }
 
-// Tab switching with sliding pill
+// Tab switching with sliding pill + swipe animation
 const TABS = ['proximos','historial','config'];
-const PILL_STEP = 54; // item width (52) + gap (2)
+const PILL_STEP = 54;
+let currentTabIdx = 0;
 
 function switchTab(id) {
-  TABS.forEach(t => {
-    document.getElementById('nav-'+t).classList.toggle('active', t===id);
-    document.getElementById('view-'+t).classList.toggle('active', t===id);
-  });
-  const idx = TABS.indexOf(id);
-  document.getElementById('nav-pill').style.transform = `translateX(${idx * PILL_STEP}px)`;
+  const newIdx = TABS.indexOf(id);
+  const oldIdx = currentTabIdx;
+  if(newIdx === oldIdx) return;
+
+  const inClass = newIdx > oldIdx ? 'slide-in-right' : 'slide-in-left';
+
+  // Hide old
+  const oldEl = document.getElementById('view-' + TABS[oldIdx]);
+  oldEl.classList.remove('active','slide-in-right','slide-in-left');
+
+  // Show new with animation
+  const newEl = document.getElementById('view-' + id);
+  newEl.classList.add('active', inClass);
+  newEl.addEventListener('animationend', () => {
+    newEl.classList.remove('slide-in-right','slide-in-left');
+  }, { once: true });
+
+  // Move pill + update nav
+  document.getElementById('nav-pill').style.transform = `translateX(${newIdx * PILL_STEP}px)`;
+  TABS.forEach(t => document.getElementById('nav-'+t).classList.toggle('active', t===id));
+
+  currentTabIdx = newIdx;
+
   if(id==='historial') renderHistory();
   if(id==='config') loadCfg();
 }
@@ -910,10 +968,10 @@ function renderHistory() {
     c.innerHTML=`<div class="empty"><div class="empty-icon">🔧</div><div class="empty-text">Sin registros aún</div></div>`;
     return;
   }
-  c.innerHTML=S.history.map(h=>{
+  c.innerHTML=S.history.map((h,i)=>{
     const pkg=PKGS.find(p=>p.id===h.pkgId); if(!pkg) return '';
     const meta=[h.date, h.notes].filter(Boolean).join(' · ');
-    return `<div class="hist-row">
+    return `<div class="hist-row" onclick="openHistModal(${i})" style="cursor:pointer;">
       <div class="hist-info">
         <div class="hist-name">${pkg.name}</div>
         <div class="hist-meta">${meta}</div>
@@ -921,6 +979,60 @@ function renderHistory() {
       <div class="hist-km">${fmtKm(h.km)}</div>
     </div>`;
   }).join('');
+}
+
+// Edit history modal
+let activeHistIdx = null;
+
+function openHistModal(idx) {
+  activeHistIdx = idx;
+  const h = S.history[idx];
+  const pkg = PKGS.find(p=>p.id===h.pkgId);
+  document.getElementById('hist-modal-title').textContent = pkg ? pkg.name : 'Editar registro';
+  document.getElementById('hist-modal-km').value = h.km || '';
+  document.getElementById('hist-modal-date').value = h.date || '';
+  document.getElementById('hist-modal-notes').value = h.notes || '';
+  document.getElementById('modal-hist').classList.add('open');
+}
+
+function closeHistModal() {
+  document.getElementById('modal-hist').classList.remove('open');
+  activeHistIdx = null;
+}
+
+function closeHistModalOutside(e) {
+  if(e.target===document.getElementById('modal-hist')) closeHistModal();
+}
+
+function confirmEditHist() {
+  const km = parseInt(document.getElementById('hist-modal-km').value);
+  const date = document.getElementById('hist-modal-date').value;
+  const notes = document.getElementById('hist-modal-notes').value.trim();
+  if(!km || !date) { showToast('Completa km y fecha'); return; }
+  S.history[activeHistIdx] = { ...S.history[activeHistIdx], km, date, notes };
+  // Update lastService if this is the most recent entry for that pkg
+  const h = S.history[activeHistIdx];
+  const pkgEntries = S.history.filter(x=>x.pkgId===h.pkgId);
+  const latest = pkgEntries.reduce((a,b)=>a.km>b.km?a:b);
+  S.lastService[h.pkgId] = { km: latest.km, date: latest.date, notes: latest.notes };
+  save(); closeHistModal(); renderHistory(); renderCards();
+  showToast('Registro actualizado');
+}
+
+function confirmDeleteHist() {
+  if(activeHistIdx===null) return;
+  const h = S.history[activeHistIdx];
+  S.history.splice(activeHistIdx, 1);
+  // Recalculate lastService for this pkg
+  const remaining = S.history.filter(x=>x.pkgId===h.pkgId);
+  if(remaining.length) {
+    const latest = remaining.reduce((a,b)=>a.km>b.km?a:b);
+    S.lastService[h.pkgId] = { km: latest.km, date: latest.date, notes: latest.notes };
+  } else {
+    delete S.lastService[h.pkgId];
+  }
+  save(); closeHistModal(); renderHistory(); renderCards();
+  showToast('Registro eliminado');
 }
 
 function loadCfg() {
